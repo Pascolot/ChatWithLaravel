@@ -77,8 +77,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div id="confirm" class="form-group mb-3">
-                                        <label for="mot_de_passe-confirm">Mot de passe de
-                                            confirmation: <span class="text-danger">*</span></label>
+                                        <label for="mot_de_passe-confirm">Confirmation de mot de passe : <span
+                                                class="text-danger">*</span></label>
                                         <input id="mot_de_passe-confirm" type="password"
                                             class="form-control @error('mot_de_passe') is-invalid @enderror"
                                             name="mot_de_passe_confirmation" required>

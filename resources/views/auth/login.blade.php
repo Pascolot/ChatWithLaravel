@@ -16,13 +16,13 @@
                             @endif
 
                             <div class="form-group mb-3">
-                                <label for="email">Email address: <span class="text-danger">*</span></label>
+                                <label for="email">Adresse email: <span class="text-danger">*</span></label>
                                 <input id="email" type="email" class="form-control" name="email"
                                     value="{{ old('email') }}" required autocomplete="email" autofocus>
                             </div>
 
                             <div class="form-group mb-3">
-                                <label for="mdp">Password: <span class="text-danger">*</span></label>
+                                <label for="mdp">Mot de passe: <span class="text-danger">*</span></label>
                                 <input id="mdp" type="password" class="form-control" name="mdp" required
                                     autocomplete="current-password">
                                 <i id="i-login" class="fa fa-eye-slash text-secondary"></i>
