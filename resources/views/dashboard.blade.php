@@ -7,14 +7,12 @@
             <div class="col-md-6 col-sm-10">
                 <div class="card">
                     <div class="card-header d-flex">
-                        @foreach ($users as $user)
-                            <img class="rounded-circle mx-2" width="46" height="46" src="{{ $user->image }}"
-                                alt="" />
-                            <div class="details">
-                                <span>{{ $user->nom }} {{ $user->prenom }}</span>
-                                <p>{{ $user->status }}</p>
-                            </div>
-                        @endforeach
+                        <img class="rounded-circle mx-2" width="46" height="46" src="{{ $user->image }}"
+                            alt="" />
+                        <div class="details">
+                            <span>{{ $user->nom }} {{ $user->prenom }}</span>
+                            <p>{{ $user->status }}</p>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-2"></div>
