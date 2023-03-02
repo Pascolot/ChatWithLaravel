@@ -62,13 +62,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="mot_de_passe">Mot de passe: <span class="text-danger">*</span></label>
-                                        <input id="mot_de_passe" type="password"
-                                            class="form-control @error('mot_de_passe') is-invalid @enderror"
-                                            name="mot_de_passe" required autocomplete="current-password">
-                                        <i class="fa fa-eye-slash @error('mot_de_passe') hide @enderror text-secondary"></i>
+                                        <label for="mdp">Mot de passe: <span class="text-danger">*</span></label>
+                                        <input id="mdp" type="password"
+                                            class="form-control @error('mdp') is-invalid @enderror"
+                                            name="mdp" required autocomplete="current-password">
+                                        <i class="fa fa-eye-slash @error('mdp') hide @enderror text-secondary"></i>
 
-                                        @error('mot_de_passe')
+                                        @error('mdp')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -77,12 +77,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div id="confirm" class="form-group mb-3">
-                                        <label for="mot_de_passe-confirm">Confirmation de mot de passe : <span
+                                        <label for="mdp-confirm">Confirmation de mot de passe : <span
                                                 class="text-danger">*</span></label>
-                                        <input id="mot_de_passe-confirm" type="password"
-                                            class="form-control @error('mot_de_passe') is-invalid @enderror"
-                                            name="mot_de_passe_confirmation" required>
-                                        <i class="fa fa-eye-slash @error('mot_de_passe') hide @enderror text-secondary"></i>
+                                        <input id="mdp-confirm" type="password"
+                                            class="form-control @error('mdp') is-invalid @enderror"
+                                            name="mdp_confirmation" required>
+                                        <i class="fa fa-eye-slash @error('mdp') hide @enderror text-secondary"></i>
                                     </div>
                                 </div>
                             </div>
