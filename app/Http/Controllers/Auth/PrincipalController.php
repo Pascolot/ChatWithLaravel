@@ -3,143 +3,115 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Password;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 
 class PrincipalController extends Controller
 {
-
-    public function index()
+    public function index(): View
     {
         return view('accueil');
     }
 
-
-    public function login()
+    public function login(): View
     {
         return view('auth.login');
     }
 
-    public function register()
+    public function register(): View
     {
         return view('auth.register');
     }
 
-    public function create(Request $req)
+    public function store(RegisterRequest $request)
     {
-        //validation
-        $req->validate([
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'mot_de_passe' => [
-                'required', 'confirmed', Password::min(8)
-                    ->letters()
-                    ->numbers()
-                    ->mixedCase()
-                    ->symbols()
-                    ->uncompromised()
-            ],
-        ]);
+        $userData = $request->validated();
 
-        $nom = $req->input('nom');
-        $prenom = $req->input('prenom');
         // chaque utlisateur a un unique identifiant
-        $random_id = rand(time(), 100000000);
-        $email = $req->input('email');
+        $userData['unique_id'] = time();
+        $userData['mdp'] = Hash::make($request->mdp);
+        $userData['image'] = $this->uploadImage($request->file('image'));
 
-        // télécharger un fichier
-        $extensions = ["jpg", "png", "jpeg", "jfif"]; // extensions permis
-        if (in_array($req->image->extension(), $extensions)) { // si l'extension d'image correspond aux extensions permis.
+        $user = User::create($userData);
+        $this->putLoggedUser($user);
 
-            $image_nom = time() . '.' . $req->image->extension();
-            $image_chemin = $req->file('image')->storeAs(
-                "fichier_telecharger",
-                $image_nom,
-                'public'
-            );
-
-            $image_url = Storage::url($image_chemin);
-
-            $status = "en ligne";
-
-            $mdp = Hash::make($req->input('mot_de_passe'));
-
-            $user = User::create([
-                'nom' => $nom,
-                'prenom' => $prenom,
-                'unique_id' => $random_id,
-                'email' => $email,
-                'image' => $image_url,
-                'status' => $status,
-                'mdp' => $mdp,
-            ]);
-
-            $req->session()->put('LoggedUser', $user);
-
-            return redirect('/dashboard');
-        } else {
-            return back()->with("erreur_img", "Selectionner une image png, jpeg, jpg, jfif, s'il vous plaît.");
-        }
+        return redirect('/dashboard');
     }
 
-    public function connection()
+    private function uploadImage(UploadedFile $image): string
     {
-        $unique_id = session()->get('LoggedUser.unique_id');
-        $users = User::where('unique_id', $unique_id)->get();
+        $imageNom = time() . '.' . $image->extension();
+        $imageChemin = $image->storeAs(
+            "fichier_telecharger",
+            $imageNom,
+            'public'
+        );
+
+        return Storage::url($imageChemin);
+    }
+
+    public function connection(): View
+    {
+        $uniqueId = session()->get('LoggedUser.unique_id');
+        $user = User::firstWhere('unique_id', $uniqueId);
+
         return view('dashboard', [
-            'users' => $users,
+            'user' => $user,
         ]);
     }
 
-    public function generate(Request $request)
+    public function loginUser(LoginRequest $request): View
     {
-        $userInfo = User::where('email', '=', $request->email)->first();
+        $user = User::firstWhere('email', $request->email);
 
-        if (!$userInfo) {
-            return back()->with('erreur', 'L\'email entré ne possède pas encore un compte.');
-        } else {
-            // verifier mot de passe
-            if (Hash::check($request->mdp, $userInfo->mdp)) {
+        $this->validatePassword($request->mdp, $user->mdp);
+        $this->putLoggedUser($user);
+        $this->updateUsertatus($user, 'en ligne');
 
-                $request->session()->put('LoggedUser', $userInfo);
-                $unique_id = session()->get('LoggedUser.unique_id');
-
-                $user = User::where('unique_id', $unique_id)->update([
-                    'status' => 'en ligne',
-                ]);
-
-                if ($user) {
-                    $users = User::where('unique_id', $unique_id)->get();
-                    return view('dashboard', [
-                        'users' => $users,
-                    ]);
-                }
-            } else {
-                return back()->with('erreur', 'Le mot de passe est incorrect.');
-            }
-        }
+        return view('dashboard', [
+            'user' => $user,
+        ]);
     }
 
-    public function destroy($id)
+    public function logout(int $uniqueId)
     {
-        $user = User::where('unique_id', $id)->update([
-            'status' => 'hors ligne',
-        ]);
+        $user = User::firstWhere('unique_id', $uniqueId);
+        $this->updateUsertatus($user, 'hors ligne');
 
         if ($user) {
             if (session()->has('LoggedUser')) {
                 session()->pull('LoggedUser');
                 return redirect('auth/login');
 
-                /* Si vous ne souhaite pas avoir un message 
-                'Vous devez se connecter' sur le login lors de la deconnexion 
+                /* Si vous ne souhaite pas avoir un message
+                'Vous devez se connecter' sur le login lors de la deconnexion
                 alors utiliser => return view('auth.login');
                 */
             }
+        }
+    }
+
+    private function updateUsertatus(User $user, string $status): void
+    {
+        $user->update([
+            'status' => $status,
+        ]);
+    }
+
+    private function putLoggedUser(User $user): void
+    {
+        request()->session()->put('LoggedUser', $user);
+    }
+
+    private function validatePassword(string $mdp, string $hashedMdp)
+    {
+        if (!Hash::check($mdp, $hashedMdp)) {
+            return back()->with('erreur', 'Le mot de passe est incorrect.');
         }
     }
 }
