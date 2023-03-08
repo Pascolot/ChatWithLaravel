@@ -18,9 +18,9 @@ class MessageChatService
 
         /* 
         *  Cette requête est la même que la requête situe en bas de celle-ci.
-        *  SELECT * FROM messages WHERE (messageRecu_id = user['unique_id'] 
+        *  "SELECT * FROM messages WHERE (messageRecu_id = user['unique_id'] 
         *  OR messageEnvoye_id = user['unique_id']) AND (messageEnvoye_id = $envoye_id
-        *  OR messageRecu_id = $envoye_id)  
+        *  OR messageRecu_id = $envoye_id)" 
         */
 
         $message = Message::where(function ($query) {

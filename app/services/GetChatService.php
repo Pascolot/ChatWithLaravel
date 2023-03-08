@@ -17,7 +17,7 @@ class GetChatService
         $this->envoye_id = $envoye_id;
         $this->sorti = $sorti;
 
-        /* 
+        /*
         *  Cette requête est la même que la requête situe en bas de celle-ci.
         *  SELECT * FROM messages as m JOIN users as s ON m.messageEnvoye_id = s.messageEnvoye_id
         *  WHERE (messageRecu_id = $recu_id AND messageEnvoye_id = $envoye_id) 
