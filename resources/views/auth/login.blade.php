@@ -8,25 +8,31 @@
                 <div class="wrapper-login mx-4">
                     <div class="p-4">
                         <p class="text-center text-uppercase">Se connecter</p>
-                        <form method="POST" action="{{ route('auth.connection') }}">
+                        <form method="POST" action="{{ route('userLogin') }}">
                             @csrf
-
-                            @if (Session::get('erreur'))
-                                <div class="alert alert-danger">{{ Session::get('erreur') }}</div>
-                            @endif
 
                             <div class="form-group mb-3">
                                 <label for="email">Adresse email: <span class="text-danger">*</span></label>
-                                <input id="email" type="email" class="form-control" name="email"
-                                    value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                <input id="email" type="email"
+                                    class="form-control @error('email') is-invalid @enderror" name="email"
+                                    value="{{ old('email') }}" autocomplete="email" autofocus required>
+
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="form-group mb-3">
-                                <label for="mdp">Mot de passe: <span class="text-danger">*</span></label>
-                                <input id="mdp" type="password" class="form-control" name="mdp" required
-                                    autocomplete="current-password">
-                                <i id="i-login" class="fa fa-eye-slash text-secondary"></i>
+                                <label for="mot_de_passe">Mot de passe: <span class="text-danger">*</span></label>
+                                <input id="mot_de_passe" type="password"
+                                    class="form-control @error('mot_de_passe') is-invalid @enderror" name="mot_de_passe"
+                                    value="{{ old('mot_de_passe') }}" autocomplete="mot_de_passe" required>
+                                <i id="i-login"
+                                    class="fa fa-eye-slash @error('mot_de_passe') hide @enderror text-secondary"></i>
 
+                                @error('mot_de_passe')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                                 <a class="btn btn-link text-decoration-none" href="#">
                                     Mot de passe oublié?
                                 </a>
@@ -43,7 +49,7 @@
                             <button class="form-control btn btn-primary" type="submit">Soumettre</button>
                             <div class="mt-2">
                                 Pas encore un compte?<a class="text-decoration-none mx-2"
-                                    href="{{ route('auth.register') }}">s'incrire
+                                    href="{{ route('userRegister') }}">s'incrire
                                     maintenant</a>
                             </div>
                         </form>

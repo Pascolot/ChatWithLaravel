@@ -25,7 +25,7 @@ class User extends Authenticatable
         'image',
         'status',
         'email',
-        'mdp',
+        'mot_de_passe',
     ];
 
     public function messages()
@@ -39,7 +39,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'mot_de_passe',
         'remember_token',
     ];
 
@@ -51,4 +51,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->mot_de_passe;
+    }
 }

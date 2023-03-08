@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Auth\PrincipalController;
-use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Auth\UserAuthControlleur;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,12 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['authVerification']], function () {
-    Route::get('auth/login', [PrincipalController::class, 'login'])->name('auth.login');
-    Route::get('auth/register', [PrincipalController::class, 'register'])->name('auth.register');
-    Route::get('/dashboard', [PrincipalController::class, 'connection'])->name('dashboard');
-
-    Route::get('/users', [ChatController::class, 'users'])->name('users');
-    Route::get('/chat/{id}', [ChatController::class, 'chat'])->name('chat');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/dashboard', [UserAuthControlleur::class, 'dashboard'])->name('dashboard');
+    Route::get('/chat/{uniqueId}', [ChatController::class, 'chat'])->name('chat');
     Route::get('/sousChat', [ChatController::class, 'sousChat'])->name('sousChat');
 });

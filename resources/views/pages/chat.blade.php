@@ -3,8 +3,8 @@
 @section('contenu')
     <div class="container mt-3">
         <div class="row">
-            <div class="col col-md-3 col-1"></div>
-            <div class="col col-md-6 col-10">
+            <div class="col-md-3 col-1"></div>
+            <div class="col-md-6 col-10">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                         <div>
@@ -25,9 +25,8 @@
                         {{-- formulaire pour les messages --}}
                         <form action="#" class="p-4 typing-area">
                             @csrf
-                            <input type="text" value="{{ Session::get('LoggedUser.unique_id') }}" name="messageEnvoye_id"
-                                hidden>
-                            <input type="text" value="{{ $user_id }}" name="messageRecu_id" hidden>
+                            <input type="text" value="{{ Auth::user()->unique_id }}" name="messageEnvoye_id" hidden>
+                            <input type="text" value="{{ $userUniqueId }}" name="messageRecu_id" hidden>
                             <input class="form-control" type="text" name="message"
                                 placeholder="Ecrire un message ici..." />
                             <button class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
@@ -35,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col col-md-3 col-1"></div>
+            <div class="col-md-3 col-1"></div>
         </div>
     </div>
 @endsection

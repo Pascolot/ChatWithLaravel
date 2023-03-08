@@ -23,11 +23,10 @@
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link text-primary" href="#">Utilisateur <span
-                            class="test">{{ Session::get('LoggedUser.unique_id') }}</span></a>
+                            class="test">{{ Auth::user()->unique_id }}</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary"
-                        href="{{ route('logout', Session::get('LoggedUser.unique_id')) }}">Deconnexion
+                    <a class="nav-link text-primary" href="{{ route('logout', Auth::user()->unique_id) }}">Deconnexion
                         <i class="fa fa-power-off"></i> </a>
                 </li>
             </ul>

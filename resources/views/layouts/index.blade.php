@@ -20,7 +20,7 @@
             </a>
             <div class="">
                 <ul class="navbar-nav">
-                    @if (Session::get('LoggedUser') !== null)
+                    @auth
                         <li class="nav-item">
                             <a class="nav-link text-primary" href="{{ route('dashboard') }}">
                                 Accueil
@@ -29,18 +29,18 @@
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link text-primary" href="{{ route('auth.login') }}">
+                            <a class="nav-link text-primary" href="{{ route('userLogin') }}">
                                 Se connecter
                                 <i class="fas fa-sign-in"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-primary" href="{{ route('auth.register') }}">
+                            <a class="nav-link text-primary" href="{{ route('userRegister') }}">
                                 S'enregistrer
                                 <i class="fas fa-sign-in-alt"></i>
                             </a>
                         </li>
-                    @endif
+                    @endauth
                 </ul>
             </div>
         </nav>

@@ -57,6 +57,7 @@ if (formChat != null) {
         xhr.send(formData); //envoyer le form data au Controlleur de laravel
     }, 500);
 
+    // fonction pour le scroll
     function scrollBottom() {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
