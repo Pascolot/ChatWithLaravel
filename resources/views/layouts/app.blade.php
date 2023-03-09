@@ -22,6 +22,10 @@
         <div class="">
             <ul class="navbar-nav">
                 <li class="nav-item">
+                    <a href="#" class="nav-link text-primary"><span class="bell">12</span><i
+                            class="fa fa-bell"></i></a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-primary" href="#">Utilisateur <span
                             class="test">{{ Auth::user()->unique_id }}</span></a>
                 </li>

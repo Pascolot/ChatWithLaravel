@@ -13,10 +13,10 @@ class UpdateStatusAction
             return false;
         }
 
-        $user = $user->update([
+        $resultQuery = $user->update([
             'status' => $status,
         ]);
 
-        return $user;
+        return $resultQuery;
     }
 }

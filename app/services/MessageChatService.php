@@ -7,14 +7,14 @@ use App\Models\Message;
 class MessageChatService
 {
     public $user;
-    public $envoye_id;
-    public $sorti;
+    public $senderId;
+    public $output;
 
-    public function messageChatData($user, $envoye_id, $sorti)
+    public function messageChatData($user, $senderId, $output)
     {
         $this->user = $user;
-        $this->envoye_id = $envoye_id;
-        $this->sorti = $sorti;
+        $this->senderId = $senderId;
+        $this->output = $output;
 
         /* 
         *  Cette requête est la même que la requête situe en bas de celle-ci.
@@ -28,8 +28,8 @@ class MessageChatService
                 ->orWhere('messageEnvoye_id', '=', $this->user['unique_id']);
         })
             ->where(function ($query) {
-                $query->where('messageEnvoye_id', '=', $this->envoye_id)
-                    ->orWhere('messageRecu_id', '=', $this->envoye_id);
+                $query->where('messageEnvoye_id', '=', $this->senderId)
+                    ->orWhere('messageRecu_id', '=', $this->senderId);
             })
             ->orderBy('msg_id', 'desc')
             ->limit(1)
@@ -37,40 +37,41 @@ class MessageChatService
 
         if (count($message) > 0) {
             foreach ($message as $msg) {
-                $resultat = $msg->message;
+                $result = $msg->message;
             }
         } else {
-            $resultat = "aucun message disponible";
+            $result = "aucun message disponible";
         }
 
 
         // limiter le nombre du message affiche par 28 caractères 
         //et nous ajoutant trois points si le message est plus de 28 caractères.
-        (strlen($resultat) > 28) ? $msg_sorti = substr($resultat, 0, 28) . '...' : $msg_sorti = $resultat;
+        (strlen($result) > 28) ? $msg_output = substr($result, 0, 28) . '...' : $msg_output = $result;
 
         // mettre le mot "vous" pour difference le message que vous avez envoyé et que vous avez reçu.
         if (isset($msg->messageEnvoye_id)) {
-            ($this->envoye_id == $msg->messageEnvoye_id) ? $vous = "Vous: " : $vous = "";
+            ($this->senderId == $msg->messageEnvoye_id) ? $you = "Vous: " : $you = "";
         } else {
-            $vous = null;
+            $you = null;
         }
 
         // verifier si l'utilisateur est en ligne ou non
-        ($this->user['status'] == "hors ligne") ? $deconnexion = "text-danger" : $deconnexion = "text-success";
+        ($this->user['status'] == "hors ligne") ? $offline = "text-danger" : $offline = "text-success";
 
-        $this->sorti .=
+        $this->output .=
             '<a class="text-decoration-none d-flex justify-content-between align-items-center" href="/chat/' . $this->user['unique_id'] . '">
                         <div class="d-flex">
                             <img class="rounded-circle" width="46" height="46" src="' . $this->user['image'] . '" alt="" />
                             <div class="mx-2">
                                 <span class="text-dark">' . $this->user['nom'] . " " . $this->user['prenom'] . '</span>
-                                <p class="text-secondary">' . $vous . $msg_sorti . '</p>
+                                <p class="text-secondary">' . $you . $msg_output . '</p>
                             </div>
                         </div>
                         <div class="">
-                            <i class="fas fa-circle ' . $deconnexion . '"></i>
+                            <i class="fas fa-circle ' . $offline . '"></i>
                         </div>
                 </a>';
-        return $this->sorti;
+
+        return $this->output;
     }
 }

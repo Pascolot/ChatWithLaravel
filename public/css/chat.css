@@ -43,6 +43,29 @@ body {
     cursor: pointer;
 }
 
+.nav-item {
+    position: relative;
+}
+
+.bell {
+    position: absolute;
+    right: 10%;
+    top: 10%;
+    width: 15px;
+    height: 15px;
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+    line-height: 15px;
+    font-size: 10px;
+    border-radius: 50%;
+    background-color: #e41e3f;
+}
+
+.fa-bell {
+    font-size: 20px;
+}
+
 .form-group i {
     position: absolute;
     right: 15px;

@@ -26,7 +26,7 @@
                                 <label for="mot_de_passe">Mot de passe: <span class="text-danger">*</span></label>
                                 <input id="mot_de_passe" type="password"
                                     class="form-control @error('mot_de_passe') is-invalid @enderror" name="mot_de_passe"
-                                    value="{{ old('mot_de_passe') }}" autocomplete="mot_de_passe" required>
+                                    autocomplete="mot_de_passe" required>
                                 <i id="i-login"
                                     class="fa fa-eye-slash @error('mot_de_passe') hide @enderror text-secondary"></i>
 

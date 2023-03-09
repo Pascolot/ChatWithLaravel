@@ -6,16 +6,16 @@ use App\Models\Message;
 
 class GetChatService
 {
-    public $recu_id;
-    public $envoye_id;
-    public $sorti;
+    public $receiverId;
+    public $senderId;
+    public $output;
 
-    public function getMessageChatData($recu_id, $envoye_id, $sorti)
+    public function getMessageChatData($receiverId, $senderId, $output)
     {
 
-        $this->recu_id = $recu_id;
-        $this->envoye_id = $envoye_id;
-        $this->sorti = $sorti;
+        $this->receiverId = $receiverId;
+        $this->senderId = $senderId;
+        $this->output = $output;
 
         /*
         *  Cette requête est la même que la requête situe en bas de celle-ci.
@@ -26,22 +26,22 @@ class GetChatService
 
         $messages = Message::with('user')
             ->where(function ($query) {
-                $query->where('messageRecu_id', '=', $this->recu_id)
-                    ->where('messageEnvoye_id', '=', $this->envoye_id);
+                $query->where('messageRecu_id', '=', $this->receiverId)
+                    ->where('messageEnvoye_id', '=', $this->senderId);
             })
             ->orWhere(function ($query) {
-                $query->where('messageRecu_id', '=', $this->envoye_id)
-                    ->where('messageEnvoye_id', '=', $this->recu_id);
+                $query->where('messageRecu_id', '=', $this->senderId)
+                    ->where('messageEnvoye_id', '=', $this->receiverId);
             })
             ->orderBy('msg_id')
             ->get();
 
         if (count($messages) > 0) {
             foreach ($messages as $message) {
-                if ($message->messageEnvoye_id == $envoye_id) {
+                if ($message->messageEnvoye_id == $senderId) {
                     // il y a un message en fond bleu si les messages sont les votre.
 
-                    $this->sorti .=
+                    $this->output .=
                         '
                         <div class="chat outgoing">
                             <div class="details">
@@ -52,7 +52,7 @@ class GetChatService
                 } else {
                     // il y a un message en fond blanc si les messages ne sont pas les votre avec l'image de l'expéditeur.
 
-                    $this->sorti .=
+                    $this->output .=
                         '<div class="chat incoming">
                                 <img class="rounded-circle" width="46" height="46" src="' . $message->user->image . '" alt="" />
                                 <div class="details">
@@ -62,6 +62,7 @@ class GetChatService
                 }
             }
         }
-        return $this->sorti;
+
+        return $this->output;
     }
 }

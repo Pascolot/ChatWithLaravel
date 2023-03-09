@@ -2,37 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Message;
+use App\Actions\CreateMessageAction;
 use App\Models\User;
 use App\Services\GetChatService;
 use App\Services\MessageChatService;
+use App\Services\SearchUserService;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public $messageChatService;
     public $getChatService;
+    public $messageChatService;
 
-    public function __construct(MessageChatService $messageChatService, GetChatService $getChatService)
+    public function __construct(GetChatService $getChatService, MessageChatService $messageChatService)
     {
-        $this->messageChatService = $messageChatService;
         $this->getChatService = $getChatService;
+        $this->messageChatService = $messageChatService;
     }
 
     public function users()
     {
-        $envoye_id = auth()->user()->unique_id;
-        $users = User::where('unique_id', '<>', $envoye_id)->get();
-        $sorti = "";
+        $senderId = auth()->user()->unique_id;
+        $users = User::where('unique_id', '<>', $senderId)->get();
+        $output = "";
 
         if (count($users) == 0) {
-            $sorti .= "Pas d'utilisateur disponible pour discuter";
+            $output .= "Pas d'utilisateur disponible pour discuter";
         } elseif (count($users) > 0) {
             foreach ($users as $user) {
-                $sorti =  $this->messageChatService->messageChatData($user, $envoye_id, $sorti);
+                $output =  $this->messageChatService->messageChatData($user, $senderId, $output);
             }
         }
-        return $sorti;
+
+        return $output;
     }
 
     public function chat($uniqueId)
@@ -46,56 +48,29 @@ class ChatController extends Controller
         ]);
     }
 
-    public function insertChat(Request $request)
+    public function insertChat(Request $request, CreateMessageAction $createMessageAction)
     {
-        $recu_id = $request->messageRecu_id;
-        $envoye_id = $request->messageEnvoye_id;
+        $receiverId = $request->messageRecu_id;
+        $senderId = $request->messageEnvoye_id;
         $message = $request->message;
-
-        if (!empty($message)) {
-            Message::create([
-                'messageRecu_id' => $recu_id,
-                'messageEnvoye_id' => $envoye_id,
-                'message' => $message,
-            ]);
-            return;
-        }
-        return;
+        $createMessageAction->handle($receiverId, $senderId, $message);
     }
 
     public function getChat(Request $request)
     {
-        $recu_id = $request->messageRecu_id;
-        $envoye_id = $request->messageEnvoye_id;
-        $sorti = "";
-        return $this->getChatService->getMessageChatData($recu_id, $envoye_id, $sorti);
+        $receiverId = $request->messageRecu_id;
+        $senderId = $request->messageEnvoye_id;
+        $output = "";
+
+        return $this->getChatService->getMessageChatData($receiverId, $senderId, $output);
     }
 
-    public function search(Request $request)
+    public function search(Request $request, SearchUserService $searchUserService)
     {
-        $termeCherche = $request->cherche;
-        $GLOBALS['termeCherche'] = $termeCherche;
-        $envoye_id = auth()->user()->unique_id;
-        $sorti = "";
+        $searchTerm = $request->cherche;
+        $senderId = auth()->user()->unique_id;
+        $output = "";
 
-        /**
-         *  SELECT * FROM users WHERE NOT unique_id = envoye_id AND
-         *  (LIKE nom = '%termeCherche%' OR LIKE prenom = '%termeCherche%');  
-         **/
-        $users = User::where('unique_id', '<>', $envoye_id)
-            ->where(function ($rq) {
-                $rq->where('nom', 'like', '%' . $GLOBALS['termeCherche'] . '%')
-                    ->orWhere('prenom', 'like', '%' . $GLOBALS['termeCherche'] . '%');
-            })
-            ->get();
-
-        if (count($users) > 0) {
-            foreach ($users as $user) {
-                $sorti =  $this->messageChatService->messageChatData($user, $envoye_id, $sorti);
-            }
-        } else {
-            $sorti .= "Aucun utilisateur trouvé en relation avec votre recherche";
-        }
-        return $sorti;
+        return $searchUserService->searching($searchTerm, $senderId, $output);
     }
 }

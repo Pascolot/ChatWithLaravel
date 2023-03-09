@@ -76,8 +76,7 @@
                                         <label for="mot_de_passe">Mot de passe: <span class="text-danger">*</span></label>
                                         <input id="mot_de_passe" type="password"
                                             class="form-control @error('mot_de_passe') is-invalid @enderror"
-                                            name="mot_de_passe" value="{{ old('mot_de_passe') }}"
-                                            autocomplete="current-password">
+                                            name="mot_de_passe" autocomplete="current-password">
                                         <i class="fa fa-eye-slash @error('mot_de_passe') hide @enderror text-secondary"></i>
 
                                         @error('mot_de_passe')
@@ -93,7 +92,7 @@
                                                 class="text-danger">*</span></label>
                                         <input id="mdp-confirm" type="password"
                                             class="form-control @error('mot_de_passe') is-invalid @enderror"
-                                            name="mot_de_passe_confirmation" value="{{ old('mot_de_passe') }}">
+                                            name="mot_de_passe_confirmation">
                                         <i class="fa fa-eye-slash @error('mot_de_passe') hide @enderror text-secondary"></i>
                                     </div>
                                 </div>
